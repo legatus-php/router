@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Legatus\Http\Router\Tests;
 
+use Legatus\Http\Errors\HttpError;
 use function Legatus\Http\Router\create;
-use Legatus\Http\Router\Exception\RoutingException;
 use Legatus\Http\Router\Router;
 use Legatus\Http\Router\RouterConfigurator;
 use Nyholm\Psr7\Response;
@@ -118,7 +118,7 @@ class TestRouterConfigurator implements RouterConfigurator
     {
         try {
             return $next->handle($req);
-        } catch (RoutingException $exception) {
+        } catch (HttpError $exception) {
             return $this->html($exception->getMessage())
                 ->withStatus($exception->getCode());
         }
@@ -134,7 +134,7 @@ class TestRouterConfigurator implements RouterConfigurator
     {
         try {
             return $next->handle($req);
-        } catch (RoutingException $exception) {
+        } catch (HttpError $exception) {
             return $this->json(['msg' => $exception->getMessage()])
                 ->withStatus($exception->getCode());
         }

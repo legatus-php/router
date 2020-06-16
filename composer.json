@@ -10,7 +10,8 @@
         }
     ],
     "repositories": [
-        { "name": "legatus/middleware-queue", "type": "vcs", "url": "https://git.mnavarro.dev/legatus/middleware-queue.git" }
+        { "name": "legatus/middleware-queue", "type": "vcs", "url": "https://git.mnavarro.dev/legatus/middleware-queue.git" },
+        { "name": "legatus/http-errors", "type": "vcs", "url": "https://git.mnavarro.dev/legatus/http-errors.git" }
     ],
     "minimum-stability": "stable",
     "autoload": {
@@ -29,6 +30,7 @@
     "require": {
         "php": ">=7.4",
         "legatus/middleware-queue": "dev-master",
+        "legatus/http-errors": "dev-master",
         "mnavarrocarter/path-to-regexp-php": "^1.0"
     },
     "require-dev": {

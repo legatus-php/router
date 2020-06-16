@@ -1,0 +1,52 @@
+{
+    "name": "legatus/router",
+    "description": "A fast and composable middleware router inspired in Express.js",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matias Navarro Carter",
+            "email": "contact@mnavarro.dev"
+        }
+    ],
+    "repositories": [
+        { "name": "legatus/middleware-queue", "type": "vcs", "url": "ssh://git@git.mnavarro.dev:5488/legatus/middleware-queue.git" }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Legatus\\Http\\Router\\": "src"
+        },
+        "files": [
+            "functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Legatus\\Http\\Router\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "php": ">=7.4",
+        "legatus/middleware-queue": "dev-master",
+        "mnavarrocarter/path-to-regexp-php": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "vimeo/psalm": "^3.7",
+        "nyholm/psr7": "^1.2",
+        "ext-json": "*"
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix --ansi",
+        "ci:style": "php-cs-fixer fix --dry-run -vvv --ansi",
+        "ci:unit": "phpunit --testdox --coverage-text",
+        "ci:types": "psalm",
+        "ci": [
+            "@ci:types",
+            "@ci:unit",
+            "@ci:style"
+        ]
+    }
+}

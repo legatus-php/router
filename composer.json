@@ -10,7 +10,7 @@
         }
     ],
     "repositories": [
-        { "name": "legatus/middleware-queue", "type": "vcs", "url": "ssh://git@git.mnavarro.dev:5488/legatus/middleware-queue.git" }
+        { "name": "legatus/middleware-queue", "type": "vcs", "url": "https://git.mnavarro.dev/legatus/middleware-queue.git" }
     ],
     "minimum-stability": "stable",
     "autoload": {

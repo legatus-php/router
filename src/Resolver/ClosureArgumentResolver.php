@@ -47,7 +47,13 @@ final class ClosureArgumentResolver implements ArgumentResolver
         }
 
         if ($this->closureThis !== null) {
-            $any = $any->bindTo($this->closureThis);
+            $binding = $any->bindTo($this->closureThis);
+            // This is a small check to ensure we still have a closure.
+            // Binding can be null when passed static functions that have no $this.
+            // In that case, we fail silently.
+            if ($binding instanceof Closure) {
+                $any = $binding;
+            }
         }
 
         return new ClosureMiddlewareAdapter($any);

@@ -10,7 +10,7 @@ use function Legatus\Http\Router\Resolver\create_default;
 function create(object $closureThis = null, QueueFactory $queueFactory = null, ArgumentResolver $resolver = null): Router {
     $queueFactory = $queueFactory ?? new ArrayQueueFactory();
     $resolver =  $resolver ?? create_default($closureThis, $queueFactory);
-    return new QuiltRouter($queueFactory->create(), $resolver);
+    return new LegatusRouter($queueFactory->create(), $resolver);
 }
 
 namespace Legatus\Http\Router\Resolver;

@@ -32,7 +32,7 @@ trait RoutingHelper
     public function getRoutingUri(Request $request): UriInterface
     {
         return $request->getAttribute(
-            QuiltRouter::ROUTING_URI_ATTR,
+            LegatusRouter::ROUTING_URI_ATTR,
             $request->getUri()
         );
     }
@@ -46,7 +46,7 @@ trait RoutingHelper
      */
     public function isMethodNotAllowed(Request $request): bool
     {
-        return $request->getAttribute(QuiltRouter::METHOD_NOT_ALLOWED_ATTR) !== null;
+        return $request->getAttribute(LegatusRouter::METHOD_NOT_ALLOWED_ATTR) !== null;
     }
 
     /**
@@ -58,7 +58,7 @@ trait RoutingHelper
      */
     public function getAllowedMethods(Request $request): array
     {
-        return $request->getAttribute(QuiltRouter::METHOD_NOT_ALLOWED_ATTR, []);
+        return $request->getAttribute(LegatusRouter::METHOD_NOT_ALLOWED_ATTR, []);
     }
 
     /**
@@ -71,6 +71,6 @@ trait RoutingHelper
      */
     public function setRoutingUri(Request $request, UriInterface $uri): Request
     {
-        return $request->withAttribute(QuiltRouter::ROUTING_URI_ATTR, $uri);
+        return $request->withAttribute(LegatusRouter::ROUTING_URI_ATTR, $uri);
     }
 }

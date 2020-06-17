@@ -20,14 +20,8 @@ use Psr\Http\Server\MiddlewareInterface;
  */
 final class ContainerArgumentResolver implements ArgumentResolver
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-    /**
-     * @var bool
-     */
-    private $lazy;
+    private ContainerInterface $container;
+    private bool $lazy;
 
     /**
      * ContainerArgumentResolver constructor.

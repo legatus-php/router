@@ -20,10 +20,7 @@ use Psr\Http\Server\MiddlewareInterface;
  */
 final class ClosureArgumentResolver implements ArgumentResolver
 {
-    /**
-     * @var object|null
-     */
-    private $closureThis;
+    private ?object $closureThis;
 
     /**
      * ClosureArgumentResolver constructor.

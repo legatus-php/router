@@ -28,9 +28,9 @@ class Route extends Path
     use RoutingHelper;
 
     /**
-     * @var array
+     * @var string[]
      */
-    private $methods;
+    private array $methods;
 
     /**
      * @param array               $methods
@@ -61,9 +61,9 @@ class Route extends Path
     {
         // If method does not match but the path does, then we save a method not allowed attr in the request
         if (!$this->methodMatches($request->getMethod())) {
-            $methods = $request->getAttribute(QuiltRouter::METHOD_NOT_ALLOWED_ATTR, []);
+            $methods = $request->getAttribute(LegatusRouter::METHOD_NOT_ALLOWED_ATTR, []);
             $methods = array_merge($methods, $this->methods);
-            $request = $request->withAttribute(QuiltRouter::METHOD_NOT_ALLOWED_ATTR, $methods);
+            $request = $request->withAttribute(LegatusRouter::METHOD_NOT_ALLOWED_ATTR, $methods);
 
             return $next->handle($request);
         }

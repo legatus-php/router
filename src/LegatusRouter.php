@@ -18,27 +18,24 @@ use Legatus\Http\Router\Resolver\ArgumentResolver;
 use MNC\PathToRegExpPHP\PathRegExpFactory;
 
 /**
- * Class QuiltRouter.
+ * Class LegatusRouter.
  *
- * This QuiltRouter is implemented as a middleware execution pipeline
+ * This LegatusRouter is implemented as a middleware execution pipeline
  *
  * It is faster than the routers that perform collection pattern matching when
  * used the right way, but unfortunately you loose the benefit of building
  * routes based on their names.
  */
-class QuiltRouter extends QueueMiddleware implements Router
+class LegatusRouter extends QueueMiddleware implements Router
 {
     public const ROUTING_URI_ATTR = '__routing_uri';
     public const METHOD_NOT_ALLOWED_ATTR = '__method_not_allowed';
     public const MATCH_RESULT = '__match_result';
 
-    /**
-     * @var ArgumentResolver
-     */
-    private $resolver;
+    private ArgumentResolver $resolver;
 
     /**
-     * QuiltRouter constructor.
+     * LegatusRouter constructor.
      *
      * @param ArgumentResolver $resolver
      * @param Queue            $queue

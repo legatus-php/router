@@ -23,11 +23,8 @@ final class CompositeArgumentResolver implements ArgumentResolver
     /**
      * @var ArgumentResolver[]
      */
-    private $resolvers;
-    /**
-     * @var QueueFactory
-     */
-    private $queueFactory;
+    private array $resolvers;
+    private QueueFactory $queueFactory;
 
     /**
      * CompositeArgumentResolver constructor.

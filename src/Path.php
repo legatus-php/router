@@ -30,14 +30,8 @@ class Path implements MiddlewareInterface
 {
     use RoutingHelper;
 
-    /**
-     * @var PathRegExp
-     */
-    protected $path;
-    /**
-     * @var MiddlewareInterface
-     */
-    protected $middleware;
+    protected PathRegExp $path;
+    protected MiddlewareInterface $middleware;
 
     /**
      * @param string              $path
@@ -99,7 +93,7 @@ class Path implements MiddlewareInterface
         // We save the routing uri
         $request = $this->setRoutingUri($request, $uri->withPath($newPath));
         // We save the match result
-        $request = $request->withAttribute(QuiltRouter::MATCH_RESULT, $result);
+        $request = $request->withAttribute(LegatusRouter::MATCH_RESULT, $result);
 
         // We inject the matched params if any
         foreach ($result->getValues() as $key => $value) {

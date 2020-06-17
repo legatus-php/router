@@ -20,18 +20,9 @@ use Psr\Http\Server\MiddlewareInterface;
  */
 final class ControllerArgumentResolver implements ArgumentResolver
 {
-    /**
-     * @var string
-     */
-    private $baseNamespace;
-    /**
-     * @var ContainerInterface|null
-     */
-    private $container;
-    /**
-     * @var string
-     */
-    private $separator;
+    private string $baseNamespace;
+    private ?ContainerInterface $container;
+    private string $separator;
 
     /**
      * ControllerMiddlewareFactory constructor.

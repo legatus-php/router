@@ -9,10 +9,10 @@
             "email": "contact@mnavarro.dev"
         }
     ],
-    "repositories": [
-        { "name": "legatus/middleware-queue", "type": "vcs", "url": "https://git.mnavarro.dev/legatus/middleware-queue.git" },
-        { "name": "legatus/http-errors", "type": "vcs", "url": "https://git.mnavarro.dev/legatus/http-errors.git" }
-    ],
+    "repositories": [{
+        "type": "composer",
+        "url": "https://satis.mnavarro.dev"
+    }],
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
@@ -29,8 +29,8 @@
     },
     "require": {
         "php": ">=7.4",
-        "legatus/middleware-queue": "dev-master",
-        "legatus/http-errors": "dev-master",
+        "legatus/middleware-queue": "^0.1",
+        "legatus/http-errors": "^0.1",
         "mnavarrocarter/path-to-regexp-php": "^1.0"
     },
     "require-dev": {

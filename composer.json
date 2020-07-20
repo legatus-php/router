@@ -16,7 +16,7 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Legatus\\Http\\Router\\": "src"
+            "Legatus\\Http\\": ["src/router", "src/middleware", "src/resolver"]
         },
         "files": [
             "functions.php"
@@ -24,13 +24,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Legatus\\Http\\Router\\Tests\\": "tests"
+            "Legatus\\Http\\": ["tests/router", "tests/middleware", "tests/resolver"]
         }
     },
     "require": {
         "php": ">=7.4",
-        "legatus/middleware-queue": "^0.1",
-        "legatus/http-errors": "^0.1",
+        "legatus/middleware-queue": "^0.2.0",
+        "legatus/http-errors": "^0.2.0",
         "mnavarrocarter/path-to-regexp-php": "^1.0"
     },
     "require-dev": {

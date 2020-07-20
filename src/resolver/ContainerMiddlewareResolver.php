@@ -9,22 +9,21 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Resolver;
+namespace Legatus\Http;
 
-use Legatus\Http\Router\Middleware\ContainerMiddlewareAdapter;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
 /**
- * Class ContainerArgumentResolver.
+ * Class ContainerMiddlewareResolver.
  */
-final class ContainerArgumentResolver implements ArgumentResolver
+final class ContainerMiddlewareResolver implements MiddlewareResolver
 {
     private ContainerInterface $container;
     private bool $lazy;
 
     /**
-     * ContainerArgumentResolver constructor.
+     * ContainerMiddlewareResolver constructor.
      *
      * @param ContainerInterface $container
      * @param bool               $lazy
@@ -43,7 +42,7 @@ final class ContainerArgumentResolver implements ArgumentResolver
         if (\is_string($any) && $this->container->has($any)) {
             return $this->createMiddleware($any);
         }
-        throw new UnresolvableArgument(sprintf('Service "%s" does not exist in the container', $any));
+        throw new \InvalidArgumentException(sprintf('service "%s" does not exist in the container', $any));
     }
 
     protected function createMiddleware(string $any): MiddlewareInterface

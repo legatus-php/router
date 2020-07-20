@@ -9,10 +9,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Tests;
+namespace Legatus\Http;
 
-use Legatus\Http\Router\Path;
-use Legatus\Http\Router\RoutingHelper;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface as Req;
@@ -20,8 +18,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class PathTest extends TestCase
 {
-    use RoutingHelper;
-
     public function testMatchesPath(): void
     {
         $factory = new Psr17Factory();
@@ -29,14 +25,14 @@ class PathTest extends TestCase
         $handler = $this->createStub(RequestHandlerInterface::class);
 
         $path = Path::fromString('/users', new CallableTestMiddleware(function (Req $req) use ($factory) {
-            $this->assertSame('/211421412/', $this->getRoutingUri($req)->getPath());
+            $this->assertSame('/211421412/', Router::getUriToMatch($req)->getPath());
 
             return $factory->createResponse(200)
                 ->withBody($factory->createStream('OK'));
         }));
 
         $response = $path->process($request, $handler);
-        $this->assertSame('OK', (string) $response->getBody());
+        self::assertSame('OK', (string) $response->getBody());
     }
 
     public function testMatchesDynamicPath(): void
@@ -47,13 +43,13 @@ class PathTest extends TestCase
 
         $path = Path::fromString('/:slug', new CallableTestMiddleware(function (Req $req) use ($factory) {
             $this->assertSame('client', $req->getAttribute('slug'));
-            $this->assertSame('/auth/211421412/', $this->getRoutingUri($req)->getPath());
+            $this->assertSame('/auth/211421412/', Router::getUriToMatch($req)->getPath());
 
             return $factory->createResponse(200)
                 ->withBody($factory->createStream('OK'));
         }));
 
         $response = $path->process($request, $handler);
-        $this->assertSame('OK', (string) $response->getBody());
+        self::assertSame('OK', (string) $response->getBody());
     }
 }

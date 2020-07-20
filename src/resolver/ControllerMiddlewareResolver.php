@@ -9,16 +9,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Resolver;
+namespace Legatus\Http;
 
-use Legatus\Http\Router\Middleware\ControllerMiddleware;
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
 /**
  * Class ControllerMiddlewareFactory.
  */
-final class ControllerArgumentResolver implements ArgumentResolver
+final class ControllerMiddlewareResolver implements MiddlewareResolver
 {
     private string $baseNamespace;
     private ?ContainerInterface $container;
@@ -44,14 +44,14 @@ final class ControllerArgumentResolver implements ArgumentResolver
     public function resolve($any): MiddlewareInterface
     {
         if (!is_string($any) || strpos($any, $this->separator) === false) {
-            throw new UnresolvableArgument('Argument is not a string that complies with the controller specification');
+            throw new InvalidArgumentException('argument is not a string that complies with the controller specification');
         }
         [$className, $method] = explode($this->separator, $any, 2);
 
         $fqcn = $this->baseNamespace.'\\'.$className;
 
         if (!class_exists($fqcn)) {
-            throw new UnresolvableArgument(sprintf('Argument specified controller class (%s) does not exist', $fqcn));
+            throw new InvalidArgumentException(sprintf('argument specified controller class (%s) does not exist', $fqcn));
         }
 
         return new ControllerMiddleware($fqcn, $method, $this->container);

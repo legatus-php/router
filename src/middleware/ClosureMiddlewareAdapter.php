@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Middleware;
+namespace Legatus\Http;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -20,7 +20,9 @@ use ReflectionFunction;
 use RuntimeException;
 
 /**
- * Class CallableMiddlewareAdapter.
+ * Class CallableMiddlewareAdapte.
+ *
+ * Adapts a Closure to a MiddlewareInterface
  */
 final class ClosureMiddlewareAdapter implements MiddlewareInterface
 {

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Middleware;
+namespace Legatus\Http;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -20,6 +20,8 @@ use RuntimeException;
 
 /**
  * Class ContainerMiddlewareAdapter.
+ *
+ * Adapts a container service to a MiddlewareInterface
  */
 final class ContainerMiddlewareAdapter implements MiddlewareInterface
 {

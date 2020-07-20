@@ -6,7 +6,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Psr\Http\Message\ServerRequestInterface as Req;
 use Psr\Http\Server\RequestHandlerInterface as Next;
 
-$router = Legatus\Http\Router\create();
+$router = Legatus\Http\create_router();
 
 $router->use(static function (Req $req, Next $next) {
     // Do something with the request in this middleware

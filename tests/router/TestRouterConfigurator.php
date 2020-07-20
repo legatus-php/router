@@ -9,12 +9,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Tests;
+namespace Legatus\Http;
 
-use Legatus\Http\Errors\HttpError;
-use function Legatus\Http\Router\create;
-use Legatus\Http\Router\Router;
-use Legatus\Http\Router\RouterConfigurator;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Req;
@@ -30,7 +26,7 @@ class TestRouterConfigurator implements RouterConfigurator
      */
     public static function configure(): Router
     {
-        $router = create();
+        $router = create_router();
         $configurator = new self();
         $configurator($router);
 

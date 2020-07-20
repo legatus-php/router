@@ -9,39 +9,38 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Resolver;
+namespace Legatus\Http;
 
-use Legatus\Http\MiddlewareQueue\Factory\QueueFactory;
-use Legatus\Http\MiddlewareQueue\QueueMiddleware;
+use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 
 /**
- * Class CompositeArgumentResolver.
+ * Class CompositeMiddlewareResolver.
  */
-final class CompositeArgumentResolver implements ArgumentResolver
+final class CompositeMiddlewareResolver implements MiddlewareResolver
 {
     /**
-     * @var ArgumentResolver[]
+     * @var MiddlewareResolver[]
      */
     private array $resolvers;
-    private QueueFactory $queueFactory;
+    private MiddlewareQueueFactory $queueFactory;
 
     /**
-     * CompositeArgumentResolver constructor.
+     * CompositeMiddlewareResolver constructor.
      *
-     * @param QueueFactory     $queueFactory
-     * @param ArgumentResolver ...$resolvers
+     * @param MiddlewareQueueFactory $queueFactory
+     * @param MiddlewareResolver     ...$resolvers
      */
-    public function __construct(QueueFactory $queueFactory, ArgumentResolver ...$resolvers)
+    public function __construct(MiddlewareQueueFactory $queueFactory, MiddlewareResolver ...$resolvers)
     {
         $this->queueFactory = $queueFactory;
         $this->resolvers = $resolvers;
     }
 
     /**
-     * @param QueueFactory $queueFactory
+     * @param MiddlewareQueueFactory $queueFactory
      */
-    public function setQueueFactory(QueueFactory $queueFactory): void
+    public function setQueueFactory(MiddlewareQueueFactory $queueFactory): void
     {
         $this->queueFactory = $queueFactory;
     }
@@ -54,7 +53,7 @@ final class CompositeArgumentResolver implements ArgumentResolver
         // Step 1: Recursively create middleware
         if (\is_array($any) && !\is_callable($any)) {
             if (\count($any) === 0) {
-                throw new UnresolvableArgument('You must provide at least one element when passing an array');
+                throw new InvalidArgumentException('Empty array was provided');
             }
             if (\count($any) === 1) {
                 return $this->resolve($any[0]);
@@ -78,12 +77,12 @@ final class CompositeArgumentResolver implements ArgumentResolver
         foreach ($this->resolvers as $resolver) {
             try {
                 return $resolver->resolve($any);
-            } catch (UnresolvableArgument $exception) {
+            } catch (InvalidArgumentException $exception) {
                 $errors[] = $exception->getMessage();
                 continue;
             }
         }
 
-        throw new UnresolvableArgument(sprintf('Could not resolve argument. Reasons: %s', implode('. ', $errors)));
+        throw new InvalidArgumentException(sprintf('Could not resolve argument. Maybe because %s', implode(' or ', $errors)));
     }
 }

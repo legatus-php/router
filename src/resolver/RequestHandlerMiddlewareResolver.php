@@ -9,16 +9,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Resolver;
+namespace Legatus\Http;
 
-use Legatus\Http\Router\Middleware\RequestHandlerMiddlewareAdapter;
+use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Class RequestHandlerArgumentResolver.
+ * Class RequestHandlerMiddlewareResolver.
  */
-final class RequestHandlerArgumentResolver implements ArgumentResolver
+final class RequestHandlerMiddlewareResolver implements MiddlewareResolver
 {
     /**
      * @param $any
@@ -30,6 +30,6 @@ final class RequestHandlerArgumentResolver implements ArgumentResolver
         if ($any instanceof RequestHandlerInterface) {
             return new RequestHandlerMiddlewareAdapter($any);
         }
-        throw new UnresolvableArgument(sprintf('Not an %s instance', RequestHandlerInterface::class));
+        throw new InvalidArgumentException(sprintf('argument is not an instance of %s', RequestHandlerInterface::class));
     }
 }

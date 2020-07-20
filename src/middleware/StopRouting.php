@@ -9,11 +9,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Middleware;
+namespace Legatus\Http;
 
-use Legatus\Http\Errors\MethodNotAllowedHttpError;
-use Legatus\Http\Errors\NotFoundHttpError;
-use Legatus\Http\Router\RoutingHelper;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
@@ -26,8 +23,6 @@ use Psr\Http\Server\RequestHandlerInterface as Next;
  */
 final class StopRouting implements MiddlewareInterface
 {
-    use RoutingHelper;
-
     private static ?StopRouting $instance = null;
 
     /**
@@ -48,15 +43,15 @@ final class StopRouting implements MiddlewareInterface
      *
      * @return Response
      *
-     * @throws MethodNotAllowedHttpError
-     * @throws NotFoundHttpError
+     * @throws MethodNotAllowed
+     * @throws NotFound
      */
     public function process(Request $request, Next $next): Response
     {
-        if ($this->isMethodNotAllowed($request)) {
-            throw new MethodNotAllowedHttpError($request, $this->getAllowedMethods($request));
+        if (Router::isMethodNotAllowed($request)) {
+            throw new MethodNotAllowed($request, Router::getAllowedMethods($request));
         }
 
-        throw new NotFoundHttpError($request);
+        throw new NotFound($request);
     }
 }

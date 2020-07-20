@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Middleware;
+namespace Legatus\Http;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -21,7 +21,10 @@ use ReflectionType;
 use RuntimeException;
 
 /**
- * Class ArgumentInjector.
+ * Trait ArgumentInjector.
+ *
+ * Helps inject arguments into a reflection method usually reading from the
+ * Request or from a Container interface.
  */
 trait ArgumentInjector
 {

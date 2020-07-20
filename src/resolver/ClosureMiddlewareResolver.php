@@ -9,21 +9,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Resolver;
+namespace Legatus\Http;
 
 use Closure;
-use Legatus\Http\Router\Middleware\ClosureMiddlewareAdapter;
 use Psr\Http\Server\MiddlewareInterface;
 
 /**
- * Class ClosureArgumentResolver.
+ * Class ClosureMiddlewareResolver.
  */
-final class ClosureArgumentResolver implements ArgumentResolver
+final class ClosureMiddlewareResolver implements MiddlewareResolver
 {
     private ?object $closureThis;
 
     /**
-     * ClosureArgumentResolver constructor.
+     * ClosureMiddlewareResolver constructor.
      *
      * @param object|null $closureThis
      */
@@ -43,7 +42,7 @@ final class ClosureArgumentResolver implements ArgumentResolver
             $any = Closure::fromCallable($any);
         }
         if (!$any instanceof Closure) {
-            throw new UnresolvableArgument('Argument is not a closure');
+            throw new \InvalidArgumentException('argument is not a closure');
         }
 
         if ($this->closureThis !== null) {

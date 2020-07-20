@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router;
+namespace Legatus\Http;
 
 use MNC\PathToRegExpPHP\PathRegExp;
 use MNC\PathToRegExpPHP\PathRegExpFactory;
@@ -25,8 +25,6 @@ use Psr\Http\Server\RequestHandlerInterface as Next;
  */
 class Route extends Path
 {
-    use RoutingHelper;
-
     /**
      * @var string[]
      */
@@ -61,11 +59,7 @@ class Route extends Path
     {
         // If method does not match but the path does, then we save a method not allowed attr in the request
         if (!$this->methodMatches($request->getMethod())) {
-            $methods = $request->getAttribute(LegatusRouter::METHOD_NOT_ALLOWED_ATTR, []);
-            $methods = array_merge($methods, $this->methods);
-            $request = $request->withAttribute(LegatusRouter::METHOD_NOT_ALLOWED_ATTR, $methods);
-
-            return $next->handle($request);
+            return $next->handle(Router::addAllowedMethods($request, $this->methods));
         }
 
         return null;

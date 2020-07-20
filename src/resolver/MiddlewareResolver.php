@@ -9,21 +9,23 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Resolver;
+namespace Legatus\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Server\MiddlewareInterface;
 
 /**
- * Interface ArgumentResolver.
+ * Interface MiddlewareResolver.
  */
-interface ArgumentResolver
+interface MiddlewareResolver
 {
     /**
      * @param $any
      *
      * @return MiddlewareInterface
      *
-     * @throws UnresolvableArgument when the argument cannot be resolved
+     * @throws InvalidArgumentException when the argument passed cannot be
+     *                                  resolved into a middleware instance
      */
     public function resolve($any): MiddlewareInterface;
 }

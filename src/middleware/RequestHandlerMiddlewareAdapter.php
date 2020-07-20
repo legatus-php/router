@@ -9,29 +9,28 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router\Tests;
+namespace Legatus\Http;
 
-use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Class CallableTestMiddleware.
- *
- * @internal
+ * Class RequestHandlerMiddlewareAdapter.
  */
-final class CallableTestMiddleware implements MiddlewareInterface
+class RequestHandlerMiddlewareAdapter implements MiddlewareInterface
 {
-    /**
-     * @var Closure
-     */
-    private $closure;
+    private RequestHandlerInterface $requestHandler;
 
-    public function __construct(Closure $closure)
+    /**
+     * RequestHandlerMiddlewareAdapter constructor.
+     *
+     * @param RequestHandlerInterface $requestHandler
+     */
+    public function __construct(RequestHandlerInterface $requestHandler)
     {
-        $this->closure = $closure;
+        $this->requestHandler = $requestHandler;
     }
 
     /**
@@ -42,6 +41,14 @@ final class CallableTestMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return ($this->closure)($request, $handler);
+        return $this->requestHandler->handle($request);
+    }
+
+    /**
+     * @return RequestHandlerInterface
+     */
+    public function getRequestHandler(): RequestHandlerInterface
+    {
+        return $this->requestHandler;
     }
 }

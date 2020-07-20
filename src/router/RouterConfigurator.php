@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router;
+namespace Legatus\Http;
 
 /**
  * Interface RouterConfigurator.

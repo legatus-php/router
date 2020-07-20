@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Legatus\Http\Router;
+namespace Legatus\Http;
 
 use MNC\PathToRegExpPHP\NoMatchException;
 use MNC\PathToRegExpPHP\PathRegExp;
@@ -28,8 +28,6 @@ use Psr\Http\Server\RequestHandlerInterface as Next;
  */
 class Path implements MiddlewareInterface
 {
-    use RoutingHelper;
-
     protected PathRegExp $path;
     protected MiddlewareInterface $middleware;
 
@@ -65,7 +63,7 @@ class Path implements MiddlewareInterface
     public function process(Request $request, Next $next): Response
     {
         // We get the routing uri to match
-        $uri = $this->getRoutingUri($request);
+        $uri = Router::getUriToMatch($request);
 
         // We fix the trailing slash if missing
         if (substr($uri->getPath(), -1) !== '/') {
@@ -90,10 +88,8 @@ class Path implements MiddlewareInterface
 
         // If it matches, we create a new path in the request
         $newPath = str_replace($result->getMatchedString(), '', $uri->getPath());
-        // We save the routing uri
-        $request = $this->setRoutingUri($request, $uri->withPath($newPath));
-        // We save the match result
-        $request = $request->withAttribute(LegatusRouter::MATCH_RESULT, $result);
+        $request = Router::setUriToMatch($request, $uri->withPath($newPath));
+        $request = Router::setMatchResult($request, $result);
 
         // We inject the matched params if any
         foreach ($result->getValues() as $key => $value) {

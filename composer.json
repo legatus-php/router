@@ -9,10 +9,6 @@
             "email": "contact@mnavarro.dev"
         }
     ],
-    "repositories": [{
-        "type": "composer",
-        "url": "https://satis.mnavarro.dev"
-    }],
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
@@ -29,26 +25,28 @@
     },
     "require": {
         "php": ">=7.4",
-        "legatus/middleware-queue": "^0.2.0",
-        "legatus/http-errors": "^0.2.0",
-        "mnavarrocarter/path-to-regexp-php": "^1.0"
+        "legatus/http-errors": "^0.1.0",
+        "mnavarrocarter/path-to-regexp-php": "^1.0",
+        "legatus/middleware-queue": "^0.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
         "friendsofphp/php-cs-fixer": "^2.16",
         "vimeo/psalm": "^3.7",
         "nyholm/psr7": "^1.2",
-        "ext-json": "*"
+        "ext-json": "*",
+        "infection/infection": "^0.16.4"
     },
     "scripts": {
         "lint": "php-cs-fixer fix --ansi",
         "ci:style": "php-cs-fixer fix --dry-run -vvv --ansi",
         "ci:unit": "phpunit --testdox --coverage-text",
-        "ci:types": "psalm",
+        "ci:infection": "infection",
         "ci": [
             "@ci:types",
             "@ci:unit",
-            "@ci:style"
+            "@ci:style",
+            "@ci:infection"
         ]
     }
 }

@@ -46,6 +46,14 @@ final class CompositeMiddlewareResolver implements MiddlewareResolver
     }
 
     /**
+     * @param MiddlewareResolver $resolver
+     */
+    public function push(MiddlewareResolver $resolver): void
+    {
+        $this->resolvers[] = $resolver;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function resolve($any): MiddlewareInterface

@@ -15,7 +15,7 @@
             "Legatus\\Http\\": ["src/router", "src/middleware", "src/resolver"]
         },
         "files": [
-            "functions.php"
+          "src/functions.php"
         ]
     },
     "autoload-dev": {

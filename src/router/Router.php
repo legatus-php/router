@@ -13,6 +13,7 @@ namespace Legatus\Http;
 
 use MNC\PathToRegExpPHP\MatchResult;
 use MNC\PathToRegExpPHP\PathRegExpFactory;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -21,17 +22,35 @@ use Psr\Http\Server\RequestHandlerInterface;
 /**
  * Class Router.
  *
- * This Router is implemented as a middleware execution pipeline
- *
- * It is faster than the routers that perform collection pattern matching when
- * used the right way, but unfortunately you loose the benefit of building
- * routes based on their names.
+ * This Router is implemented as a middleware execution pipeline.
  */
 class Router extends QueueMiddleware
 {
     private const URI_ATTR = 'router.uri';
     private const ALLOWED_METHODS_ATTR = 'router.allowed_methods';
     private const MATCH_RESULT_ATTR = 'router.match_result';
+    private const PARAMS_ATTR = 'router.params';
+
+    /**
+     * @param ContainerInterface|null $container
+     * @param object|null             $closureThis
+     *
+     * @return Router
+     */
+    public static function create(ContainerInterface $container = null, object $closureThis = null): Router
+    {
+        $queueFactory = new ArrayMiddlewareQueueFactory();
+        $resolvers = new CompositeMiddlewareResolver(
+            $queueFactory,
+            new RequestHandlerMiddlewareResolver(),
+            new ClosureMiddlewareResolver($closureThis ?? $container),
+        );
+        if ($container !== null) {
+            $resolvers->push(new ContainerMiddlewareResolver($container));
+        }
+
+        return new Router($queueFactory->create(), $resolvers);
+    }
 
     /**
      * Check if the request matched a path but not a method.
@@ -105,7 +124,51 @@ class Router extends QueueMiddleware
      */
     public static function setMatchResult(Request $request, MatchResult $matchResult): Request
     {
+        // We inject the matched params if any
+        foreach ($matchResult->getValues() as $key => $value) {
+            $request = self::saveParam($request, $key, $value);
+        }
+
         return $request->withAttribute(self::MATCH_RESULT_ATTR, $matchResult);
+    }
+
+    /**
+     * Saves a request.
+     *
+     * @param Request $request
+     * @param string  $name
+     * @param string  $value
+     *
+     * @return Request
+     */
+    public static function saveParam(Request $request, string $name, string $value): Request
+    {
+        $params = $request->getAttribute(self::PARAMS_ATTR, []);
+        $params[$name] = $value;
+
+        return $request->withAttribute(self::PARAMS_ATTR, $params)
+            ->withAttribute($name, $value);
+    }
+
+    /**
+     * @param Request $request
+     * @param bool    $values
+     *
+     * @return array
+     */
+    public static function getParams(Request $request, bool $values = false): array
+    {
+        $paramNames = $request->getAttribute(self::PARAMS_ATTR, []);
+        $attrs = $request->getAttributes();
+        $params = [];
+        foreach ($paramNames as $paramName) {
+            $params[$paramName] = $attrs[$paramName] ?? null;
+        }
+        if ($values === true) {
+            $params = array_values($params);
+        }
+
+        return $params;
     }
 
     private MiddlewareResolver $resolver;

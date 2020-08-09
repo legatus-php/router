@@ -91,11 +91,6 @@ class Path implements MiddlewareInterface
         $request = Router::setUriToMatch($request, $uri->withPath($newPath));
         $request = Router::setMatchResult($request, $result);
 
-        // We inject the matched params if any
-        foreach ($result->getValues() as $key => $value) {
-            $request = $request->withAttribute($key, $value);
-        }
-
         return $this->middleware->process($request, $next);
     }
 

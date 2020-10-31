@@ -17,7 +17,7 @@ use MNC\PathToRegExpPHP\PathRegExpFactory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface as Next;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
 /**
  * Class Path.
@@ -29,73 +29,51 @@ use Psr\Http\Server\RequestHandlerInterface as Next;
 class Path implements MiddlewareInterface
 {
     protected PathRegExp $path;
-    protected MiddlewareInterface $middleware;
+    protected Handler $handler;
 
     /**
-     * @param string              $path
-     * @param MiddlewareInterface $middleware
+     * @param string  $path
+     * @param Handler $handler
      *
      * @return Path
      */
-    public static function fromString(string $path, MiddlewareInterface $middleware): Path
+    public static function define(string $path, Handler $handler): Path
     {
-        return new self(PathRegExpFactory::create($path, 0), $middleware);
+        return new self(PathRegExpFactory::create($path, 0), $handler);
     }
 
     /**
      * Route constructor.
      *
-     * @param PathRegExp          $path
-     * @param MiddlewareInterface $middleware
+     * @param PathRegExp $path
+     * @param Handler    $handler
      */
-    public function __construct(PathRegExp $path, MiddlewareInterface $middleware)
+    protected function __construct(PathRegExp $path, Handler $handler)
     {
         $this->path = $path;
-        $this->middleware = $middleware;
+        $this->handler = $handler;
     }
 
     /**
      * @param Request $request
-     * @param Next    $next
+     * @param Handler $handler
      *
      * @return Response
+     *
+     * @throws MissingRoutingContext
      */
-    public function process(Request $request, Next $next): Response
+    public function process(Request $request, Handler $handler): Response
     {
-        // We get the routing uri to match
-        $uri = Router::getUriToMatch($request);
+        $context = RoutingContext::of($request);
 
-        // We fix the trailing slash if missing
-        if (substr($uri->getPath(), -1) !== '/') {
-            $uri = $uri->withPath($uri->getPath().'/');
-            $request->withUri($uri);
-        }
-
-        $path = $uri->getPath();
-
-        // We try to match the path
         try {
-            $result = $this->path->match($path);
+            $result = $context->match($this->path);
         } catch (NoMatchException $e) {
-            return $next->handle($request);
+            return $handler->handle($request);
         }
 
-        $response = $this->postMatchingHook($request, $next);
+        $context->storeMatchResult($result);
 
-        if ($response instanceof Response) {
-            return $response;
-        }
-
-        // If it matches, we create a new path in the request
-        $newPath = str_replace($result->getMatchedString(), '', $uri->getPath());
-        $request = Router::setUriToMatch($request, $uri->withPath($newPath));
-        $request = Router::setMatchResult($request, $result);
-
-        return $this->middleware->process($request, $next);
-    }
-
-    protected function postMatchingHook(Request $request, Next $next): ?Response
-    {
-        return null;
+        return $this->handler->handle($request);
     }
 }

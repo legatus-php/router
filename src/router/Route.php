@@ -11,58 +11,81 @@ declare(strict_types=1);
 
 namespace Legatus\Http;
 
+use MNC\PathToRegExpPHP\NoMatchException;
 use MNC\PathToRegExpPHP\PathRegExp;
 use MNC\PathToRegExpPHP\PathRegExpFactory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface as Next;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
 /**
  * Class Route.
  *
  * @internal
  */
-class Route extends Path
+class Route implements MiddlewareInterface
 {
+    protected PathRegExp $path;
     /**
      * @var string[]
      */
     private array $methods;
+    protected Handler $handler;
 
     /**
-     * @param array               $methods
-     * @param string              $path
-     * @param MiddlewareInterface $middleware
+     * @param array   $methods
+     * @param string  $path
+     * @param Handler $handler
      *
      * @return Route
      */
-    public static function fromPath(array $methods, string $path, MiddlewareInterface $middleware): self
+    public static function define(array $methods, string $path, Handler $handler): Route
     {
-        return new self($methods, PathRegExpFactory::create($path), $middleware);
+        return new self($methods, PathRegExpFactory::create($path), $handler);
     }
 
     /**
      * Route constructor.
      *
-     * @param array               $methods
-     * @param PathRegExp          $path
-     * @param MiddlewareInterface $middleware
+     * @param array      $methods
+     * @param PathRegExp $path
+     * @param Handler    $handler
      */
-    public function __construct(array $methods, PathRegExp $path, MiddlewareInterface $middleware)
+    protected function __construct(array $methods, PathRegExp $path, Handler $handler)
     {
+        $this->path = $path;
         $this->methods = $methods;
-        parent::__construct($path, $middleware);
+        $this->handler = $handler;
     }
 
-    protected function postMatchingHook(Request $request, Next $next): ?Response
+    /**
+     * @param Request $request
+     * @param Handler $handler
+     *
+     * @return Response
+     *
+     * @throws MissingRoutingContext
+     */
+    public function process(Request $request, Handler $handler): Response
     {
-        // If method does not match but the path does, then we save a method not allowed attr in the request
-        if (!$this->methodMatches($request->getMethod())) {
-            return $next->handle(Router::addAllowedMethods($request, $this->methods));
+        $context = RoutingContext::of($request);
+
+        try {
+            $result = $context->match($this->path);
+        } catch (NoMatchException $e) {
+            return $handler->handle($request);
         }
 
-        return null;
+        if (!$this->methodMatches($request->getMethod())) {
+            $context->saveAllowedMethod(...$this->methods);
+
+            return $handler->handle($request);
+        }
+
+        $context->storeMatchResult($result);
+
+        return $this->handler->handle($request);
     }
 
     /**

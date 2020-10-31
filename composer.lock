@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "edc0e78cc2d913dbae8e5191a25374db",
+    "content-hash": "a27f05b48fb11232eaf6e9b60289cebb",
     "packages": [
         {
             "name": "legatus/http-errors",
@@ -55,57 +55,6 @@
                 "source": "https://github.com/legatus-php/http-errors/tree/master"
             },
             "time": "2020-07-25T14:47:00+00:00"
-        },
-        {
-            "name": "legatus/middleware-queue",
-            "version": "0.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/legatus-php/middleware-queue.git",
-                "reference": "304a9b6ea3cb32256af014036ed0053ce12c1e73"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/legatus-php/middleware-queue/zipball/304a9b6ea3cb32256af014036ed0053ce12c1e73",
-                "reference": "304a9b6ea3cb32256af014036ed0053ce12c1e73",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.4",
-                "psr/http-server-middleware": "^1.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.16",
-                "infection/infection": "^0.16.4",
-                "phpunit/phpunit": "^9.0",
-                "vimeo/psalm": "^3.7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Legatus\\Http\\": [
-                        "src/queue",
-                        "src/middleware",
-                        "src/factory"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Matias Navarro Carter",
-                    "email": "contact@mnavarro.dev"
-                }
-            ],
-            "description": "A middleware queue that handles requests and works as a middleware itself",
-            "support": {
-                "issues": "https://github.com/legatus-php/middleware-queue/issues",
-                "source": "https://github.com/legatus-php/middleware-queue/tree/master"
-            },
-            "time": "2020-07-25T13:43:52+00:00"
         },
         {
             "name": "mnavarrocarter/path-to-regexp-php",
@@ -261,6 +210,10 @@
                 "response",
                 "server"
             ],
+            "support": {
+                "issues": "https://github.com/php-fig/http-server-handler/issues",
+                "source": "https://github.com/php-fig/http-server-handler/tree/master"
+            },
             "time": "2018-10-30T16:46:14+00:00"
         },
         {
@@ -314,6 +267,10 @@
                 "request",
                 "response"
             ],
+            "support": {
+                "issues": "https://github.com/php-fig/http-server-middleware/issues",
+                "source": "https://github.com/php-fig/http-server-middleware/tree/master"
+            },
             "time": "2018-10-30T17:12:04+00:00"
         }
     ],
@@ -5456,7 +5413,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "ext-fileinfo": "*"
     },
     "platform-dev": {
         "ext-json": "*"

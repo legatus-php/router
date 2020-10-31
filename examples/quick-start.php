@@ -3,23 +3,25 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Legatus\Http\Router;
+use Legatus\Http\RoutingContext;
+use Legatus\Http\RoutingContextError;
+use Psr\Http\Message\ResponseInterface as Resp;
 use Psr\Http\Message\ServerRequestInterface as Req;
-use Psr\Http\Server\RequestHandlerInterface as Next;
+use function Legatus\Http\handle_func;
 
-$router = Legatus\Http\create_router();
-
-$router->use(static function (Req $req, Next $next) {
-    // Do something with the request in this middleware
-    return $next->handle($req);
-});
-
-$router->get('/users/:id', static function (string $id) {
-    // Create a response in this route handler
+/**
+ * @param Req $req
+ * @return Resp
+ * @throws RoutingContextError
+ */
+function show_user(Req $req): Resp {
+    $id = RoutingContext::of($req)->getParam('id');
     return new Nyholm\Psr7\Response(200, [], 'Hello User ' . $id);
-});
+}
 
-// Its highly recommended to stop the routing at the end
-$router->stop();
+$router = new Router();
+$router->get('/users/:id', handle_func('show_user'));
 
 $request = new Nyholm\Psr7\ServerRequest('GET', '/users/1');
 $response = $router->handle($request);

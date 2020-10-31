@@ -28,7 +28,7 @@ class RouterFunctionalTest extends TestCase
      */
     protected function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return TestRouterConfigurator::configure()->handle($request);
+        return TestRouterFactory::configure()->handle($request);
     }
 
     public function testItReachesHomeView(): void

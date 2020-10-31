@@ -12,22 +12,28 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Legatus\\Http\\": ["src/router", "src/middleware", "src/resolver"]
+            "Legatus\\Http\\": [
+                "src/router",
+                "src/handlers",
+                "src/errors",
+                "src/middleware"
+            ]
         },
         "files": [
-          "src/functions.php"
+            "src/functions.php"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Legatus\\Http\\": ["tests/router", "tests/middleware", "tests/resolver"]
-        }
+            "Legatus\\Http\\": "tests"
+        },
+        "files": ["tests/functions.php"]
     },
     "require": {
         "php": ">=7.4",
         "legatus/http-errors": "^0.1.0",
         "mnavarrocarter/path-to-regexp-php": "^1.0",
-        "legatus/middleware-queue": "^0.1.0"
+        "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
@@ -40,6 +46,7 @@
     "scripts": {
         "lint": "php-cs-fixer fix --ansi",
         "ci:style": "php-cs-fixer fix --dry-run -vvv --ansi",
+        "ci:types": "psalm",
         "ci:unit": "phpunit --testdox --coverage-text",
         "ci:infection": "infection",
         "ci": [

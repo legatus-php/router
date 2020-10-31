@@ -9,27 +9,57 @@
 
 namespace Legatus\Http;
 
-use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
 /**
- * @param object|null             $closureThis
- * @param ContainerInterface|null $container
+ * Creates a PSR-15 RequestHandler by stacking multiple Middleware on top of a
+ * RequestHandler.
  *
- * @return Router
+ * The Middleware is stacked in a FIFO fashion.
  *
- * @deprecated Use Router::create() instead
+ * @param Handler    $handler       The final handler to execute
+ * @param Middleware ...$middleware The middleware in normal order of execution
+ *
+ * @return Handler The composed handler
  */
-function create_router(object $closureThis = null, ContainerInterface $container = null): Router
+function stack(Handler $handler, Middleware ...$middleware): Handler
 {
-    $queueFactory = new ArrayMiddlewareQueueFactory();
-    $resolvers = new CompositeMiddlewareResolver(
-        $queueFactory,
-        new RequestHandlerMiddlewareResolver(),
-        new ClosureMiddlewareResolver($closureThis ?? $container),
+    return array_reduce(
+        array_reverse($middleware),
+        static fn (Handler $passed, Middleware $middleware) => new MiddlewareRequestHandler($middleware, $passed),
+        $handler
     );
-    if ($container !== null) {
-        $resolvers->push(new ContainerMiddlewareResolver($container));
-    }
+}
 
-    return new Router($queueFactory->create(), $resolvers);
+/**
+ * Transforms any callable into a PSR-15 Request Handler.
+ *
+ * The passed callable MUST implement the handler signature correctly, ie,
+ * it MUST take a PSR-7 Server Request as the first and only argument, and it
+ * MUST return a PSR-7 Response.
+ *
+ * @param callable $callable
+ *
+ * @return Handler
+ */
+function handle_func(callable $callable): Handler
+{
+    return new CallableRequestHandler($callable);
+}
+
+/**
+ * Transforms any callable into a PSR-15 Middleware.
+ *
+ * The passed callable MUST implement the middleware signature correctly, ie,
+ * it MUST take a PSR-7 Server Request as the first argument and a PSR-15 Request
+ * Handler as the second, and it MUST return a PSR-7 Response.
+ *
+ * @param callable $callable
+ *
+ * @return Middleware
+ */
+function middle_func(callable $callable): Middleware
+{
+    return new CallableMiddleware($callable);
 }

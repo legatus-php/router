@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the Legatus project organization.
  * (c) Matías Navarro-Carter <contact@mnavarro.dev>
@@ -12,14 +10,8 @@ declare(strict_types=1);
 namespace Legatus\Http;
 
 /**
- * Interface RouterConfigurator.
+ * Class MissingRoutingContext.
  */
-interface RouterConfigurator
+class MissingRoutingContext extends RoutingContextError
 {
-    /**
-     * Configures a router instance.
-     *
-     * @param Router $router
-     */
-    public function __invoke(Router $router): void;
 }

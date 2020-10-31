@@ -14,16 +14,20 @@ namespace Legatus\Http;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface as Next;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
 /**
- * Class MethodNotAllowedMiddleware.
+ * AllowedMethodsChecker throws an exception if the request matched a path
+ * but no methods.
  *
- * This middleware throws exceptions when the request comes.
+ * It is implemented as a singleton since has no dependencies and can be used
+ * in many routers. This is to save memory.
+ *
+ * It it also possible to create an instance of it.
  */
-final class StopRouting implements MiddlewareInterface
+final class AllowedMethodsChecker implements MiddlewareInterface
 {
-    private static ?StopRouting $instance = null;
+    private static ?AllowedMethodsChecker $instance = null;
 
     /**
      * @return static
@@ -39,19 +43,20 @@ final class StopRouting implements MiddlewareInterface
 
     /**
      * @param Request $request
-     * @param Next    $next
+     * @param Handler $handler
      *
      * @return Response
      *
      * @throws MethodNotAllowed
-     * @throws NotFound
+     * @throws MissingRoutingContext
      */
-    public function process(Request $request, Next $next): Response
+    public function process(Request $request, Handler $handler): Response
     {
-        if (Router::isMethodNotAllowed($request)) {
-            throw new MethodNotAllowed($request, Router::getAllowedMethods($request));
+        $context = RoutingContext::of($request);
+        if ($context->isMethodNotAllowed()) {
+            throw new MethodNotAllowed($request, $context->getAllowedMethods());
         }
 
-        throw new NotFound($request);
+        return $handler->handle($request);
     }
 }

@@ -81,9 +81,21 @@ final class PlainTextErrorHandler implements MiddlewareInterface
             $message .= PHP_EOL;
             $message .= $error->getTraceAsString();
 
-            while (($error = $error->getPrevious()) !== null) {
-                $message .= PHP_EOL;
-                $message .= $error->getPrevious();
+            while (true) {
+                $error = $error->getPrevious();
+                if (!$error instanceof Throwable) {
+                    break;
+                }
+                $message .= PHP_EOL.PHP_EOL;
+                $message .= sprintf(
+                        '%s thrown on %s, line %s',
+                        get_class($error),
+                        $error->getFile(),
+                        $error->getLine()
+                    ).PHP_EOL;
+                $message .= 'Error message: '.$error->getMessage().PHP_EOL;
+
+                $message .= $error->getTraceAsString();
             }
         }
 

@@ -47,8 +47,8 @@
         "lint": "php-cs-fixer fix --ansi",
         "ci:style": "php-cs-fixer fix --dry-run -vvv --ansi",
         "ci:types": "psalm",
-        "ci:unit": "phpunit --testdox --coverage-text",
-        "ci:infection": "infection",
+        "ci:unit": "XDEBUG_MODE=coverage phpunit --testdox --coverage-text",
+        "ci:infection": "XDEBUG_MODE=coverage infection",
         "ci": [
             "@ci:types",
             "@ci:unit",

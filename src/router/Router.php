@@ -25,9 +25,10 @@ class Router implements Handler
 {
     /**
      * @var Middleware[]
+     * @psalm-var array<int,Middleware>
      */
     private array $middleware;
-    private Handler $finalHandler;
+    private Handler $fallbackHandler;
 
     /**
      * @return Router
@@ -40,12 +41,12 @@ class Router implements Handler
     /**
      * Router constructor.
      *
-     * @param Handler|null $finalHandler
+     * @param Handler|null $fallbackHandler
      * @param Middleware   ...$middleware
      */
-    public function __construct(Handler $finalHandler = null, Middleware ...$middleware)
+    public function __construct(Handler $fallbackHandler = null, Middleware ...$middleware)
     {
-        $this->finalHandler = $finalHandler ?? HandleNotFound::instance();
+        $this->fallbackHandler = $fallbackHandler ?? HandleNotFound::instance();
         $this->middleware = $middleware;
     }
 
@@ -72,7 +73,7 @@ class Router implements Handler
             $request = RoutingContext::inject($request);
         } catch (InvalidRoutingContextOverride $e) {
         }
-        $handler = stack($this->finalHandler, ...$this->middleware);
+        $handler = stack($this->fallbackHandler, ...$this->middleware);
 
         return $handler->handle($request);
     }
